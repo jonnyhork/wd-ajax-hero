@@ -17,7 +17,9 @@
         'data-tooltip': movie.title
       });
 
-      $title.tooltip({ delay: 50 }).text(movie.title);
+      $title.tooltip({
+        delay: 50
+      }).text(movie.title);
 
       const $poster = $('<img>').addClass('poster');
 
@@ -57,4 +59,52 @@
   };
 
   // ADD YOUR CODE HERE
+
+  // GET USER INPUT FROM SEARCH //
+
+  $('#btn-search').click((event) => event.preventDefault())
+
+  $('#btn-search').click(function(event) {
+    let userInput
+
+    if ($('#search').val() !== '') {
+      userInput = $('#search').val()
+      console.log(userInput);
+    }
+    // CLEAR THE SEARCH
+    $('#search').val('')
+    let endPoint = userInput.replace(/\s/g, '%20')
+    console.log(endPoint);
+    //  MAKE THE AJAX CALL //
+
+    var $xhr = $.getJSON(`https://omdb-api.now.sh/?s=${userInput}`);
+
+    $xhr.done(function(data) {
+      if ($xhr.status !== 200) {
+        return;
+      }
+      // console.log('DATA is: ', data);
+      let searchResult = data['Search']
+      // console.log("SEARCHRESULT is: ", searchResult);
+      searchResult.forEach((obj) => {
+
+        movies.push({
+          id: obj.imdbID,
+          poster: obj.Poster,
+          title: obj.Title,
+          year: obj.Year,
+        })
+
+      }) // forEACH
+      console.log('movies Array: ', movies);
+      renderMovies()
+    }); // AJAX REQUEST
+
+
+
+  }) // END OF CLICK EVENT
+
+
+
+
 })();
