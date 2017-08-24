@@ -62,22 +62,28 @@
 
   // GET USER INPUT FROM SEARCH //
 
-  $('#btn-search').click((event) => event.preventDefault())
+  // $('#btn-search').click((event) => event.preventDefault())
 
   $('#btn-search').click(function(event) {
+    event.preventDefault()
+    movies.splice(0, movies.length)
     let userInput
 
     if ($('#search').val() !== '') {
       userInput = $('#search').val()
-      console.log(userInput);
+      // console.log(userInput);
     }
+
     // CLEAR THE SEARCH
     $('#search').val('')
+
+    // replace any spaces with %20 //
     let endPoint = userInput.replace(/\s/g, '%20')
-    console.log(endPoint);
+    // console.log(endPoint);
+
     //  MAKE THE AJAX CALL //
 
-    var $xhr = $.getJSON(`https://omdb-api.now.sh/?s=${userInput}`);
+    var $xhr = $.getJSON(`https://omdb-api.now.sh/?s=${endPoint}`);
 
     $xhr.done(function(data) {
       if ($xhr.status !== 200) {
@@ -88,6 +94,16 @@
       // console.log("SEARCHRESULT is: ", searchResult);
       searchResult.forEach((obj) => {
 
+        // movies = searchResult.map((obj) => {
+        //   return {
+        //     id: obj.imdbID,
+        //     poster: obj.Poster,
+        //     title: obj.Title,
+        //     year: obj.Year,
+        //   }
+        //
+        // }) // end of the map()
+
         movies.push({
           id: obj.imdbID,
           poster: obj.Poster,
@@ -96,13 +112,20 @@
         })
 
       }) // forEACH
-      console.log('movies Array: ', movies);
+
+      // console.log('movies Array: ', movies);
       renderMovies()
+
     }); // AJAX REQUEST
 
+    // $('.modal-trigger').click((event) => {
+    //   let movieID = $(this).attr('href')
+    //   console.log('movieID is: ', movieID);
+    // var $xhr = $.getJASON(`http://www.omdbapi.com/?i=${movieID}`)
+    // })
+  }) // END OF CLICK EVENT FOR SEARCH
 
 
-  }) // END OF CLICK EVENT
 
 
 
