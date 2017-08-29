@@ -1,12 +1,13 @@
 (function() {
   'use strict';
 
-  const movies = [];
+  var movies = [];
 
   const renderMovies = function() {
     $('#listings').empty();
 
     for (const movie of movies) {
+      // console.log(movie);
       const $col = $('<div>').addClass('col s6');
       const $card = $('<div>').addClass('card hoverable');
       const $content = $('<div>').addClass('card-content center');
@@ -58,15 +59,11 @@
     }
   };
 
-  // ADD YOUR CODE HERE
-
   // GET USER INPUT FROM SEARCH //
-
-  // $('#btn-search').click((event) => event.preventDefault())
-
   $('#btn-search').click(function(event) {
+    console.log("CLICK");
     event.preventDefault()
-    movies.splice(0, movies.length)
+    movies = [];
     let userInput
 
     if ($('#search').val() !== '') {
@@ -82,52 +79,34 @@
     // console.log(endPoint);
 
     //  MAKE THE AJAX CALL //
-
     var $xhr = $.getJSON(`https://omdb-api.now.sh/?s=${endPoint}`);
-
     $xhr.done(function(data) {
-      if ($xhr.status !== 200) {
-        return;
-      }
-      // console.log('DATA is: ', data);
-      let searchResult = data['Search']
-      // console.log("SEARCHRESULT is: ", searchResult);
-      searchResult.forEach((obj) => {
+        if ($xhr.status !== 200) {
+          return;
+        }
+        // console.log('DATA is: ', data);
+        let searchResult = data['Search']
+        // console.log("SEARCHRESULT is: ", searchResult);
+        if (searchResult) {
+          searchResult.forEach((obj) => {
+            // console.log(obj);
+            movies.push({
+              id: obj.imdbID,
+              poster: obj.Poster,
+              title: obj.Title,
+              year: obj.Year,
+              plot: 'blah'
+            })
 
-        // movies = searchResult.map((obj) => {
-        //   return {
-        //     id: obj.imdbID,
-        //     poster: obj.Poster,
-        //     title: obj.Title,
-        //     year: obj.Year,
-        //   }
-        //
-        // }) // end of the map()
+          }) // forEACH
 
-        movies.push({
-          id: obj.imdbID,
-          poster: obj.Poster,
-          title: obj.Title,
-          year: obj.Year,
-        })
+          // console.log('movies Array: ', movies);
+          renderMovies()
+        }
 
-      }) // forEACH
+      }) // AJAX REQUEST
+      .done()
 
-      // console.log('movies Array: ', movies);
-      renderMovies()
-
-    }); // AJAX REQUEST
-
-    // $('.modal-trigger').click((event) => {
-    //   let movieID = $(this).attr('href')
-    //   console.log('movieID is: ', movieID);
-    // var $xhr = $.getJASON(`http://www.omdbapi.com/?i=${movieID}`)
-    // })
   }) // END OF CLICK EVENT FOR SEARCH
-
-
-
-
-
 
 })();
